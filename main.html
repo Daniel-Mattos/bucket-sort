@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>Document</title>
+</head>
+<body>
+    <p>#include <stdio.h> <br>
+#include <stdlib.h><br>
+    <br>
+#define BUCKET_SIZE 10 // Número de baldes<br>
+<br>
+// Função para ordenar um balde usando a ordenação por inserção<br>
+void insertionSort(float arr[], int n) {<br>
+    for (int i = 1; i < n; i++) {<br>
+        float key = arr[i];<br>
+        int j = i - 1;<br>
+        while (j >= 0 && arr[j] > key) {<br>
+            arr[j + 1] = arr[j];<br>
+            j--;<br>
+        }<br>
+        arr[j + 1] = key;<br>
+    }<br>
+}<br>
+
+// Função para realizar o Bucket Sort<br>
+void bucketSort(float arr[], int n) {<br>
+    // Criar baldes<br>
+    float **buckets = (float **)malloc(BUCKET_SIZE * sizeof(float *));<br>
+    int *bucketSizes = (int *)malloc(BUCKET_SIZE * sizeof(int));<br>
+    <br>
+    for (int i = 0; i < BUCKET_SIZE; i++) {<br>
+        buckets[i] = (float *)malloc(n * sizeof(float));<br>
+        bucketSizes[i] = 0;<br>
+    }<br>
+    <br>
+    // Distribuir os elementos nos baldes<br>
+    for (int i = 0; i < n; i++) {<br>
+        int bucketIndex = (int)(arr[i] * BUCKET_SIZE); // Calcular o índice do balde<br>
+        if (bucketIndex >= BUCKET_SIZE) {<br>
+            bucketIndex = BUCKET_SIZE - 1; // Garantir que o índice não exceda o tamanho do balde<br>
+        }<br>
+        buckets[bucketIndex][bucketSizes[bucketIndex]++] = arr[i]; // Adicionar o elemento ao balde<br>
+    }<br>
+    <br>
+    // Ordenar cada balde e concatenar os resultados<br>
+    int index = 0;<br>
+    for (int i = 0; i < BUCKET_SIZE; i++) {<br>
+        if (bucketSizes[i] > 0) {<br>
+            insertionSort(buckets[i], bucketSizes[i]); // Ordenar o balde<br>
+            for (int j = 0; j < bucketSizes[i]; j++) {<br>
+                arr[index++] = buckets[i][j]; // Concatenar os elementos ordenados<br>
+            }<br>
+        }<br>
+    }<br>
+    <br>
+    // Liberar a memória alocada<br>
+    for (int i = 0; i < BUCKET_SIZE; i++) {<br>
+        free(buckets[i]);<br>
+    }<br>
+    free(buckets);<br>
+    free(bucketSizes);<br>
+}<br>
+<br>
+// Função para imprimir um array<br>
+void printArray(float arr[], int n) {<br>
+    for (int i = 0; i < n; i++) {<br>
+        printf("%f ", arr[i]);<br>
+    }<br>
+    printf("\n");<br>
+}<br>
+<br>
+// Programa principal<br>
+int main() {<br>
+    int n;<br>
+    <br>
+    printf("Digite a quantidade de números que você deseja ordenar: ");<br>
+    scanf("%d", &n);<br>
+    <br>
+    // Alocar memória para o array<br>
+    float *arr = (float *)malloc(n * sizeof(float));<br>
+    <br>
+    // Ler os números do usuário<br>
+    printf("Digite os números (no intervalo [0, 1)): \n");<br>
+    for (int i = 0; i < n; i++) {<br>
+        scanf("%f", &arr[i]);<br>
+    }<br>
+    <br>
+    printf("Array original: ");<br>
+    printArray(arr, n);<br>
+    <br>
+    bucketSort(arr, n);<br>
+    <br>
+    printf("Array ordenado: ");<br>
+    printArray(arr, n);<br>
+    <br>
+    // Liberar a memória alocada<br>
+    free(arr);<br>
+    <br>
+    return 0;<br>
+}</p><br>
+</body><br>
+</html><br>
